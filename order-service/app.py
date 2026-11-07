@@ -3,51 +3,27 @@ import requests
 
 app = Flask(__name__)
 
-orders = []
-
-CART_SERVICE_URL = "http://127.0.0.1:5002/cart"
-
-
-@app.route('/')
-def home():
-    return "Welcome to Order Service!"
-
-
-@app.route('/orders', methods=['GET'])
-def get_orders():
-    return jsonify(orders)
-
-
-@app.route('/orders', methods=['POST'])
+@app.route('/order', methods=['POST'])
 def create_order():
 
-    try:
-        response = requests.get(CART_SERVICE_URL, timeout=5)
-        response.raise_for_status()
-        cart = response.json()
+    response = requests.get(
+        "http://cart-service:5002/cart",
+        timeout=5
+    )
 
-        if not cart:
-            return jsonify({"error": "Cart is empty"}), 400
+    cart = response.json()
 
-        total = sum(
-            item['price'] * item['quantity']
-            for item in cart
-        )
+    if not cart:
+        return jsonify({"message": "Cart is empty"}), 400
 
-        order = {
-            "order_id": len(orders) + 1,
-            "items": cart,
-            "total_price": total,
-            "status": "Order Confirmed"
-        }
+    order = {
+        "order_id": 101,
+        "items": cart,
+        "status": "Order placed successfully"
+    }
 
-        orders.append(order)
-
-        return jsonify(order), 201
-
-    except requests.RequestException:
-        return jsonify({"error": "Cart Service is unavailable"}), 503
+    return jsonify(order), 201
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5003, debug=True)
+    app.run(host='0.0.0.0', port=5003)

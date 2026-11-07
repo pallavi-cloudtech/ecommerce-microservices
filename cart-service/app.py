@@ -13,7 +13,7 @@ def add_to_cart():
     quantity = data.get('quantity', 1)
 
     response = requests.get(
-        "http://127.0.0.1:5001/products",
+        "http://product-service:5001/products",
         timeout=5
     )
 
