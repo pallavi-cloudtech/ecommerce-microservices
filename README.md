@@ -10,7 +10,7 @@ The application consists of three independent services developed using Python Fl
 
 ## Architecture
 
-```
+```mermaid
 flowchart TD
     A[Client / Browser]
     B[NGINX Ingress Controller]
